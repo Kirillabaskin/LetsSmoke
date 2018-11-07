@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login">kirillabaskin</string>
+    <string name="password">qqqq</string>
+    <bool name="userIsIn">false</bool>
+</resources>
