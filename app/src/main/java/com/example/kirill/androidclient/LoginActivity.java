@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUI(GoogleSignInAccount account) {
         progressBar.setVisibility(View.GONE);
         if (account != null) {
-            Intent intent = new Intent(this, TcpActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             intent.putExtra("ACCOUNT", account);
             startActivity(intent);
         }
