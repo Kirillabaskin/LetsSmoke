@@ -27,6 +27,9 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,13 +49,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mGoogleSignInClient = getIntent().getParcelableExtra("CLIENT");
+        Intent intentFromT = getIntent();
+        String serverMesg = intentFromT.getStringExtra("SERVER_MES");
 
         listView = findViewById(R.id.listView);
 
-        List<Room> item = initData();
+        List<Room> item = initData(serverMesg);
 
-        RoomAdaptor adapter = new RoomAdaptor(this, initData());
+        RoomAdaptor adapter = new RoomAdaptor(this, item);
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -77,13 +81,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void signOut() {
-        mGoogleSignInClient.signOut()
+       /* mGoogleSignInClient.signOut()
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
 
                     }
-                });
+                });*/
     }
 
     @Override
@@ -123,15 +127,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private List<Room> initData() {
+    private List<Room> initData(String message) {
         Log.d(TAG, this.getClass().getName() + "/initData");
         List<Room> list = new ArrayList<Room>();
-
-        list.add(new Room("Обед", "Анатолий", "Го"));
-        list.add(new Room("Курилка", "Кирилл", "Пошли"));
-        list.add(new Room("Комната", "Платон", "мусор"));
-        list.add(new Room("Офис", "Дмитрий Анатольевич", "Совещание"));
-        return list;
+        try {
+            JSONArray json = new JSONArray(message);
+            JSONObject js = (JSONObject) json.get(0);
+            JSONArray jsa = (JSONArray) js.get("events");
+            JSONObject jso;
+            for (int i = 0; i < jsa.length(); i++) {
+                if (((JSONObject) jsa.get(i)).getBoolean("flag")) {
+                    jso = (JSONObject) jsa.get(i);
+                    list.add(new Room(js.getString("roomName"), jso.getString("author"), jso.getString("event")));
+                    break;
+                }
+            }
+            return list;
+        } catch (Exception e) {
+            Log.e("MainActivity: ", " Eroor", e);
+            return list;
+        }
     }
 
     public void onRoom(View view) {

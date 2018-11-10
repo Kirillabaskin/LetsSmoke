@@ -14,7 +14,7 @@ import java.net.Socket;
  * Description
  *
  * @author Catalin Prata
- * Date: 2/12/13
+ *         Date: 2/12/13
  */
 public class TcpClient {
 
@@ -68,7 +68,7 @@ public class TcpClient {
     public void stopClient() {
         Log.e("TCP Client", " method StopClient");
         // send mesage that we are closing the connection
-        sendMessage(Constants.CLOSED_CONNECTION + "Kazy");
+        //sendMessage(" ");
 
         mRun = false;
 
@@ -108,15 +108,12 @@ public class TcpClient {
                 //sendMessage(Constants.LOGIN_NAME + "Kazy");
                 Log.e("TCP Client", "C: message sends...");
                 //in this while the client listens for the messages sent by the server
-                while (mRun) {
-                    mServerMessage = mBufferIn.readLine();
-                    if (mServerMessage != null && mMessageListener != null) {
-                        //call the method messageReceived from MyActivity class
-                        mMessageListener.messageReceived(mServerMessage);
-                    }
+                mServerMessage = mBufferIn.readLine();
+                if (mServerMessage != null && mMessageListener != null) {
+                    //call the method messageReceived from MyActivity class
+                    mMessageListener.messageReceived(mServerMessage);
                 }
-
-                Log.e("RESPONSE FROM SERVER", "S: Received Message: '" + mServerMessage + "'");
+                Log.e("TCP ResFROM SERVER", "S: Received Message: '" + mServerMessage + "'");
 
             } catch (Exception e) {
 

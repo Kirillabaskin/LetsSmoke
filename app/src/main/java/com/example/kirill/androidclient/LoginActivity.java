@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -33,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInClient mGoogleSignInClient;
 
     SignInButton signInButton;
+    ProgressBar progressBar;
     //Thread mainThread;
 
     @Override
@@ -41,6 +43,9 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, this.getClass().getName() + "/onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google);
+
+        progressBar = findViewById(R.id.prgBr);
+        progressBar.setVisibility(View.GONE);
 
         signInButton = findViewById(R.id.sign_in_button);
         signInButton.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUI(GoogleSignInAccount account) {
+        progressBar.setVisibility(View.GONE);
         if (account != null) {
             Intent intent = new Intent(this, TcpActivity.class);
             intent.putExtra("ACCOUNT", account);
@@ -137,6 +143,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void signIn() {
+        progressBar.setVisibility(View.VISIBLE);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }

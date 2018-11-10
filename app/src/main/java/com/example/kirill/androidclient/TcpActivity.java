@@ -1,5 +1,6 @@
 package com.example.kirill.androidclient;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -65,6 +66,12 @@ public class TcpActivity extends AppCompatActivity {
         new ConnectTask().execute("");
     }
 
+    public void onGo(View v) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("SERVER_MES", arrayList.get(arrayList.size() - 1));
+        startActivity(intent);
+    }
+
     public void onDis(View v) {
         if (mTcpClient != null) {
             mTcpClient.stopClient();
@@ -124,6 +131,7 @@ public class TcpActivity extends AppCompatActivity {
             });
             //Toast.makeText(getApplicationContext(),"ConnectTask",Toast.LENGTH_SHORT).show();
             mTcpClient.run();
+
 
             return null;
         }
