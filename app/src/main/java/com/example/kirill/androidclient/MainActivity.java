@@ -60,21 +60,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         progressBar.setVisibility(View.VISIBLE);
         context = getApplicationContext();
         TCPServer();
-        // listView = findViewById(R.id.listView);
-        // List<Room> item = initData("");
-
-        // RoomAdaptor adapter = new RoomAdaptor(this, item);
-
-        //listView.setAdapter(adapter);
-       /* listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
-                Intent intent = new Intent(getApplicationContext(), RoomActivity.class);
-                intent.putExtra("RoomName", ((TextView) itemClicked.findViewById(R.id.txtTitle)).getText());
-                startActivity(intent);
-            }
-        });*/
-
     }
 
     private void TCPServer() {
@@ -147,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });*/
     }
-
     @Override
     protected void onPause() {
         Log.d(TAG, this.getClass().getName() + "/onPause");
@@ -160,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         Log.d(TAG, this.getClass().getName() + "/onResume");
         super.onResume();
+        if (mTcpClient == null)
+            TCPServer();
     }
 
     @Override
@@ -191,15 +177,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d(TAG, this.getClass().getName() + "/initData");
         List<Room> list = new ArrayList<Room>();
         try {
-            JSONArray json = new JSONArray(message);
-            JSONObject js = (JSONObject) json.get(0);
-            JSONArray jsa = (JSONArray) js.get("events");
-            JSONObject jso;
-            for (int i = 0; i < jsa.length(); i++) {
-                if (((JSONObject) jsa.get(i)).getBoolean("flag")) {
-                    jso = (JSONObject) jsa.get(i);
-                    list.add(new Room(js.getString("roomName"), jso.getString("author"), jso.getString("event")));
-                    break;
+            JSONArray jsRooms = new JSONArray(message);
+            for (int j = 0; j < jsRooms.length(); j++) {
+                JSONObject jsRoom = (JSONObject) jsRooms.get(j);
+                JSONArray jsEvents = (JSONArray) jsRoom.get("events");
+                JSONObject jsEvent;
+                for (int i = 0; i < jsEvents.length(); i++) {
+                    if (((JSONObject) jsEvents.get(i)).getBoolean("flag")) {
+                        jsEvent = (JSONObject) jsEvents.get(i);
+                        list.add(new Room(jsRoom.getString("roomName"), jsEvent.getString("author"), jsEvent.getString("event")));
+                        break;
+                    }
                 }
             }
             return list;
